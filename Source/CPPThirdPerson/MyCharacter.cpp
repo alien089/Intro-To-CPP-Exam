@@ -19,6 +19,8 @@ AMyCharacter::AMyCharacter()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
 
+	InventoryComponent = CreateDefaultSubobject<UWeaponInventoryComponent>("Inventory");
+	this->AddInstanceComponent(InventoryComponent);
 }
 
 // Called when the game starts or when spawned
@@ -26,13 +28,9 @@ void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CurrentHealth = MaxHealth;
+	TakeWeapon();
 
-	Gun = GetWorld()->SpawnActor<AGun>(GunClass);
-	GetMesh()->HideBoneByName(TEXT("weapon_r"), EPhysBodyOp::PBO_None);
-	if (Gun == nullptr) return;
-	Gun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
-	Gun->SetOwner(this);
+	CurrentHealth = MaxHealth;
 }
 
 // Called every frame
@@ -54,6 +52,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction(TEXT("Shoot"), EInputEvent::IE_Pressed, this, &AMyCharacter::Shoot);
+	PlayerInputComponent->BindAction(TEXT("SwitchWeapon"), EInputEvent::IE_Pressed, this, &AMyCharacter::SwitchWeapon);
 }
 
 
@@ -101,6 +100,27 @@ float AMyCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 	}
 
 	return DamageToApply;
+}
+
+void AMyCharacter::SwitchWeapon()
+{
+	if (ActualWeaponIndex + 1 < InventoryComponent->WeaponInventory.Num())
+		ActualWeaponIndex++;
+	else
+		ActualWeaponIndex = 0;
+
+	Gun->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
+	TakeWeapon();
+}
+
+void AMyCharacter::TakeWeapon()
+{
+	ActualGunClass = InventoryComponent->WeaponInventory[ActualWeaponIndex];
+	Gun = GetWorld()->SpawnActor<AGun>(ActualGunClass);
+	GetMesh()->HideBoneByName(TEXT("weapon_r"), EPhysBodyOp::PBO_None);
+	if (Gun == nullptr) return;
+	Gun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
+	Gun->SetOwner(this);
 }
 
 bool AMyCharacter::IsDead() const

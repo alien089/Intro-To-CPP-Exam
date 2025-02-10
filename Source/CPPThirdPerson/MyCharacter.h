@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "WeaponInventoryComponent.h"
 #include "GameFramework/Character.h"
 #include "MyCharacter.generated.h"
 
@@ -17,7 +18,7 @@ class CPPTHIRDPERSON_API AMyCharacter : public ACharacter
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats")
-	float MaxHealth = 100;
+	float MaxHealth = 10000;
 	UPROPERTY(VisibleAnywhere, Category = "Stats")
 	float CurrentHealth;
 
@@ -30,10 +31,14 @@ private:
 	UCameraComponent* Camera;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	TSubclassOf<AGun> GunClass;
+	TSubclassOf<AGun> ActualGunClass;
 
 	UPROPERTY()
 	AGun* Gun;
+	int ActualWeaponIndex = 0;
+	
+	UPROPERTY(EditDefaultsOnly)
+	UWeaponInventoryComponent* InventoryComponent;
 
 
 public:
@@ -46,6 +51,10 @@ public:
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
+	virtual void SwitchWeapon();
+	
+	virtual void TakeWeapon();
+	
 	UFUNCTION(BlueprintPure)
 	bool IsDead() const;
 
