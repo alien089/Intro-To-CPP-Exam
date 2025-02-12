@@ -76,4 +76,5 @@ private:
 	UFUNCTION()
 	void LookRight(float AxisValue);
 
+	bool CheckIfGun();
 };

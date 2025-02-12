@@ -76,8 +76,17 @@ void AMyCharacter::LookRight(float AxisValue)
 	AddControllerYawInput(AxisValue * RotationSpeed * GetWorld()->GetDeltaSeconds());
 }
 
+bool AMyCharacter::CheckIfGun()
+{
+	if (Gun == nullptr)
+		return false;
+	else
+		return true;
+}
+
 void AMyCharacter::Shoot()
 {
+	if (!CheckIfGun()) return;
 	Gun->PullTrigger();
 
 }
@@ -104,6 +113,8 @@ float AMyCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 
 void AMyCharacter::SwitchWeapon()
 {
+	if (!CheckIfGun()) return;
+	
 	if (ActualWeaponIndex + 1 < InventoryComponent->WeaponInventory.Num())
 		ActualWeaponIndex++;
 	else
@@ -115,6 +126,7 @@ void AMyCharacter::SwitchWeapon()
 
 void AMyCharacter::TakeWeapon()
 {
+	if (InventoryComponent->WeaponInventory.IsEmpty()) return;
 	ActualGunClass = InventoryComponent->WeaponInventory[ActualWeaponIndex];
 	Gun = GetWorld()->SpawnActor<AGun>(ActualGunClass);
 	GetMesh()->HideBoneByName(TEXT("weapon_r"), EPhysBodyOp::PBO_None);
