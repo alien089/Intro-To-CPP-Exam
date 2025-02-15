@@ -20,24 +20,36 @@ AGun::AGun()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Root);
 
+	CurrentAmmo = TotalAmountOfAmmo;
 }
 
 // Called when the game starts or when spawned
 void AGun::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
+
 
 // Called every frame
 void AGun::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
 
+bool AGun::CheckForAmmo() const
+{
+	if (CurrentAmmo <= 0)	
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Out of Ammo"));
+		return false;
+	}
+	return true;
 }
 
 void AGun::PullTrigger()
 {
+	if (!CheckForAmmo()) return;
+	CurrentAmmo--;
 	UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, Mesh, TEXT("Muzzle"));
 
 	APawn* OwnerPawn = Cast<APawn>(GetOwner());
@@ -75,5 +87,10 @@ void AGun::PullTrigger()
 
 
 	//DrawDebugCamera(GetWorld(), Location, Rotation, 90, 2, FColor::Green, true);
+}
+
+void AGun::Reload()
+{
+	CurrentAmmo = TotalAmountOfAmmo;
 }
 

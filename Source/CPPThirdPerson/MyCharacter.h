@@ -61,6 +61,9 @@ public:
 	UFUNCTION()
 	void Shoot();
 
+	UFUNCTION()
+	void TryReload();
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -76,5 +79,5 @@ private:
 	UFUNCTION()
 	void LookRight(float AxisValue);
 
-	bool CheckIfGun();
+	bool CheckIfGun() const;
 };

@@ -33,6 +33,10 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Weapon Stats")
 	float Damage = 10.f;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon Stats")
+	int TotalAmountOfAmmo = 10;
+	int CurrentAmmo = 0;
+	
 public:
 	// Sets default values for this actor's properties
 	AGun();
@@ -40,10 +44,12 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void PullTrigger();
+	void Reload();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-
+private:
+	bool CheckForAmmo() const;
 };

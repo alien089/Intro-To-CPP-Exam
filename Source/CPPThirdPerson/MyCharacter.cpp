@@ -51,6 +51,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction(TEXT("Shoot"), EInputEvent::IE_Pressed, this, &AMyCharacter::Shoot);
 	PlayerInputComponent->BindAction(TEXT("SwitchWeapon"), EInputEvent::IE_Pressed, this, &AMyCharacter::SwitchWeapon);
+	PlayerInputComponent->BindAction(TEXT("Reload"), EInputEvent::IE_Pressed, this, &AMyCharacter::TryReload);
 }
 
 
@@ -74,7 +75,7 @@ void AMyCharacter::LookRight(float AxisValue)
 	AddControllerYawInput(AxisValue * RotationSpeed * GetWorld()->GetDeltaSeconds());
 }
 
-bool AMyCharacter::CheckIfGun()
+bool AMyCharacter::CheckIfGun() const
 {
 	if (Gun == nullptr)
 		return false;
@@ -87,6 +88,13 @@ void AMyCharacter::Shoot()
 	if (!CheckIfGun()) return;
 	Gun->PullTrigger();
 
+}
+
+void AMyCharacter::TryReload()
+{
+	if (InventoryComponent->CheckIsAmmoMagazineEmpty(ActualGunClass)) return;
+	InventoryComponent->RemoveMagazine(ActualGunClass);
+	Gun->Reload();
 }
 
 float AMyCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -111,7 +119,7 @@ float AMyCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 
 void AMyCharacter::SwitchWeapon()
 {
-	if (ActualWeaponIndex + 1 < InventoryComponent->WeaponInventory.Num())
+	if (ActualWeaponIndex + 1 < InventoryComponent->GetWeaponInventorySize())
 		ActualWeaponIndex++;
 	else
 		ActualWeaponIndex = 0;
@@ -127,8 +135,8 @@ void AMyCharacter::SwitchWeapon()
 
 void AMyCharacter::TakeWeapon()
 {
-	if (InventoryComponent->WeaponInventory.IsEmpty()) return;
-	ActualGunClass = InventoryComponent->WeaponInventory[ActualWeaponIndex];
+	if (InventoryComponent->IsWeaponInventoryEmpty()) return;
+	ActualGunClass = InventoryComponent->GetActualWeapon(ActualWeaponIndex);
 	Gun = GetWorld()->SpawnActor<AGun>(ActualGunClass);
 	GetMesh()->HideBoneByName(TEXT("weapon_r"), EPhysBodyOp::PBO_None);
 	if (Gun == nullptr) return;

@@ -41,6 +41,7 @@ void APickUpGun::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor
 {
 	AMyCharacter* player = Cast<AMyCharacter>(OtherActor);
 	player->GetInventoryComponent()->AddWeapon(TypeOfGun);
+	player->GetInventoryComponent()->AddMagazine(TypeOfGun, 5);
 	player->SwitchWeapon();
 	Destroy();
 }
