@@ -40,8 +40,8 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	UWeaponInventoryComponent* InventoryComponent;
 
-
 public:
+	UWeaponInventoryComponent*& GetInventoryComponent(){ return InventoryComponent;	}
 
 	AMyCharacter();
 

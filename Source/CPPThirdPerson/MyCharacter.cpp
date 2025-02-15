@@ -28,8 +28,6 @@ void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	TakeWeapon();
-
 	CurrentHealth = MaxHealth;
 }
 
@@ -113,14 +111,17 @@ float AMyCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 
 void AMyCharacter::SwitchWeapon()
 {
-	if (!CheckIfGun()) return;
-	
 	if (ActualWeaponIndex + 1 < InventoryComponent->WeaponInventory.Num())
 		ActualWeaponIndex++;
 	else
 		ActualWeaponIndex = 0;
 
-	Gun->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
+	if (CheckIfGun())
+	{
+		Gun->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
+		Gun->Destroy();
+	}
+	
 	TakeWeapon();
 }
 

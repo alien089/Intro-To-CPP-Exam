@@ -32,3 +32,8 @@ void UWeaponInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 	// ...
 }
 
+void UWeaponInventoryComponent::AddWeapon(TSubclassOf<AGun> gun)
+{
+	WeaponInventory.Add(gun);
+}
+
