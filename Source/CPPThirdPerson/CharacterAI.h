@@ -62,6 +62,8 @@ public:
 	UFUNCTION()
 	void TryReload();
 
+	void Respawn();
+
 protected:
 
 	virtual void BeginPlay() override;

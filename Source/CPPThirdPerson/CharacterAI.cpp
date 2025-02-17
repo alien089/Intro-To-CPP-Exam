@@ -63,6 +63,11 @@ void ACharacterAI::TryReload()
 	Gun->Reload();
 }
 
+void ACharacterAI::Respawn()
+{
+	
+}
+
 float ACharacterAI::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	float DamageToApply = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);

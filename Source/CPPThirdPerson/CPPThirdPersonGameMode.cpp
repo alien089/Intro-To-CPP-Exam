@@ -16,6 +16,6 @@ ACPPThirdPersonGameMode::ACPPThirdPersonGameMode()
 
 }
 
-void ACPPThirdPersonGameMode::PawnKilled(APawn* PawnKilled)
+void ACPPThirdPersonGameMode::PawnKilled(ACharacter* PawnKilled)
 {
 }

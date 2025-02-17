@@ -4,8 +4,9 @@
 #include "EngineUtils.h"
 #include "GameFramework/Controller.h"
 #include "ShooterAIController.h"
+#include "GameFramework/Character.h"
 
-void ATangoHuntGameMode::PawnKilled(APawn* PawnKilled)
+void ATangoHuntGameMode::PawnKilled(ACharacter* PawnKilled)
 {
 	Super::PawnKilled(PawnKilled);
 

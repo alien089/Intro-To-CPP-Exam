@@ -4,19 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "CPPThirdPersonGameMode.h"
-#include "TangoHuntGameMode.generated.h"
+#include "CaptureFlagGameMode.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class CPPTHIRDPERSON_API ATangoHuntGameMode : public ACPPThirdPersonGameMode
+class CPPTHIRDPERSON_API ACaptureFlagGameMode : public ACPPThirdPersonGameMode
 {
 	GENERATED_BODY()
-	
-public:
-	virtual void PawnKilled(ACharacter* PawnKilled) override;
-
+private:
+	int iFlagTic = 0;
 private:
 	void EndGame(bool bIsPlayerWinner);
+	
+public:
+	void AddFlagTic();
+	virtual void PawnKilled(ACharacter* PawnKilled) override;
+
 };

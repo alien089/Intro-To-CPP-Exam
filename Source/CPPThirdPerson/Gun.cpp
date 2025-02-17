@@ -20,13 +20,13 @@ AGun::AGun()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Root);
 
-	CurrentAmmo = TotalAmountOfAmmo;
 }
 
 // Called when the game starts or when spawned
 void AGun::BeginPlay()
 {
 	Super::BeginPlay();
+	CurrentAmmo = TotalAmountOfAmmo;
 }
 
 
