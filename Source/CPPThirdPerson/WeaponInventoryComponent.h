@@ -17,6 +17,8 @@ class CPPTHIRDPERSON_API UWeaponInventoryComponent : public UActorComponent
 
 private:
 	std::map<TSubclassOf<AGun>, int> AmmoMagazine;
+	
+	UPROPERTY(EditAnywhere, Category="PickUp")
 	TArray<TSubclassOf<AGun>> WeaponInventory;
 	
 public:	

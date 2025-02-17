@@ -1,14 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "MyCharacter.h"
+
+#include "CharacterAI.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Gun.h"
 #include "Components/CapsuleComponent.h"
 #include "CPPThirdPersonGameMode.h"
 
+
 // Sets default values
-AMyCharacter::AMyCharacter()
+ACharacterAI::ACharacterAI()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -19,63 +21,27 @@ AMyCharacter::AMyCharacter()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
 
-	InventoryComponent = CreateDefaultSubobject<UWeaponInventoryComponent>("Inventoryblabla");
+	InventoryComponent = CreateDefaultSubobject<UWeaponInventoryComponent>("Inventory");
 	this->AddInstanceComponent(InventoryComponent);
 }
 
 // Called when the game starts or when spawned
-void AMyCharacter::BeginPlay()
+void ACharacterAI::BeginPlay()
 {
 	Super::BeginPlay();
 
+	SwitchWeapon();
 	CurrentHealth = MaxHealth;
 }
 
 // Called every frame
-void AMyCharacter::Tick(float DeltaTime)
+void ACharacterAI::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
-// Called to bind functionality to input
-void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &AMyCharacter::MoveForward);
-	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &AMyCharacter::MoveRight);
-	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &AMyCharacter::LookUp);
-	PlayerInputComponent->BindAxis(TEXT("LookRight"), this, &AMyCharacter::LookRight);
-
-	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &ACharacter::Jump);
-	PlayerInputComponent->BindAction(TEXT("Shoot"), EInputEvent::IE_Pressed, this, &AMyCharacter::Shoot);
-	PlayerInputComponent->BindAction(TEXT("SwitchWeapon"), EInputEvent::IE_Pressed, this, &AMyCharacter::SwitchWeapon);
-	PlayerInputComponent->BindAction(TEXT("Reload"), EInputEvent::IE_Pressed, this, &AMyCharacter::TryReload);
-}
-
-
-void AMyCharacter::MoveForward(float AxisValue)
-{
-	AddMovementInput(GetActorForwardVector() * AxisValue);
-}
-
-void AMyCharacter::MoveRight(float AxisValue)
-{
-	AddMovementInput(GetActorRightVector() * AxisValue);
-}
-
-void AMyCharacter::LookUp(float AxisValue)
-{
-	AddControllerPitchInput(-AxisValue * RotationSpeed * GetWorld()->GetDeltaSeconds());
-}
-
-void AMyCharacter::LookRight(float AxisValue)
-{
-	AddControllerYawInput(AxisValue * RotationSpeed * GetWorld()->GetDeltaSeconds());
-}
-
-bool AMyCharacter::CheckIfGun() const
+bool ACharacterAI::CheckIfGun() const
 {
 	if (Gun == nullptr)
 		return false;
@@ -83,22 +49,21 @@ bool AMyCharacter::CheckIfGun() const
 		return true;
 }
 
-void AMyCharacter::Shoot()
+void ACharacterAI::Shoot()
 {
 	if (!CheckIfGun()) return;
 	Gun->PullTrigger();
 
 }
 
-void AMyCharacter::TryReload()
+void ACharacterAI::TryReload()
 {
-	if (!CheckIfGun()) return;
 	if (InventoryComponent->CheckIsAmmoMagazineEmpty(ActualGunClass)) return;
 	InventoryComponent->RemoveMagazine(ActualGunClass);
 	Gun->Reload();
 }
 
-float AMyCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+float ACharacterAI::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	float DamageToApply = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	DamageToApply = FMath::Min(CurrentHealth, DamageToApply);
@@ -118,7 +83,7 @@ float AMyCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 	return DamageToApply;
 }
 
-void AMyCharacter::SwitchWeapon()
+void ACharacterAI::SwitchWeapon()
 {
 	if (ActualWeaponIndex + 1 < InventoryComponent->GetWeaponInventorySize())
 		ActualWeaponIndex++;
@@ -134,7 +99,7 @@ void AMyCharacter::SwitchWeapon()
 	TakeWeapon();
 }
 
-void AMyCharacter::TakeWeapon()
+void ACharacterAI::TakeWeapon()
 {
 	if (InventoryComponent->IsWeaponInventoryEmpty()) return;
 	ActualGunClass = InventoryComponent->GetActualWeapon(ActualWeaponIndex);
@@ -145,7 +110,7 @@ void AMyCharacter::TakeWeapon()
 	Gun->SetOwner(this);
 }
 
-bool AMyCharacter::IsDead() const
+bool ACharacterAI::IsDead() const
 {
 	return CurrentHealth <= 0;
 }

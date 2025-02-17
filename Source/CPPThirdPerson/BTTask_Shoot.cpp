@@ -3,6 +3,7 @@
 
 #include "BTTask_Shoot.h"
 #include "AIController.h"
+#include "CharacterAI.h"
 #include "MyCharacter.h"
 
 UBTTask_Shoot::UBTTask_Shoot()
@@ -16,7 +17,7 @@ EBTNodeResult::Type UBTTask_Shoot::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 
 	if (OwnerComp.GetAIOwner() == nullptr) return EBTNodeResult::Failed;
 
-	AMyCharacter* Character = Cast<AMyCharacter>(OwnerComp.GetAIOwner()->GetPawn());
+	ACharacterAI* Character = Cast<ACharacterAI>(OwnerComp.GetAIOwner()->GetPawn());
 
 	if (Character == nullptr)
 		return EBTNodeResult::Failed;
