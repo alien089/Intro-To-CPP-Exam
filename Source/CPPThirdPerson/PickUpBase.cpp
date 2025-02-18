@@ -38,7 +38,8 @@ void APickUpBase::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActo
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	player = Cast<AMyCharacter>(OtherActor);
-	player->GetInventoryComponent()->AddMagazine(TypeOfGun, 5);
+	player->GetInventoryComponent()->AddMagazine(TypeOfGun, AmountOfMagazine);
+	DestroyPickUp();
 }
 
 void APickUpBase::DestroyPickUp()

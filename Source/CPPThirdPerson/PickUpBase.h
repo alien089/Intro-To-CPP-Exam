@@ -25,6 +25,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category="PickUp")
 	TSubclassOf<AGun> TypeOfGun;
+	UPROPERTY(EditAnywhere)
+	int AmountOfMagazine = 5;
 	
 	AMyCharacter* player;
 	
