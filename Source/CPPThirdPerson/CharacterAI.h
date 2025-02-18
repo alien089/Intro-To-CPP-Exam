@@ -18,8 +18,8 @@ class CPPTHIRDPERSON_API ACharacterAI : public ACharacter
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats")
-	float MaxHealth = 10000;
-	UPROPERTY(VisibleAnywhere, Category = "Stats")
+	float MaxHealth = 40;
+	UPROPERTY(VisibleAnywhere, Category = "Stats")	
 	float CurrentHealth;
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
@@ -39,6 +39,9 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly)
 	UWeaponInventoryComponent* InventoryComponent;
+	
+	UPROPERTY(EditAnywhere, Category = "SpawnPosition")
+	FVector SpawnPosition;
 
 public:
 	UWeaponInventoryComponent*& GetInventoryComponent(){ return InventoryComponent;	}

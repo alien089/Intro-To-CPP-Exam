@@ -4,6 +4,7 @@
 #include "FlagZone.h"
 
 #include "CaptureFlagGameMode.h"
+#include "MyCharacter.h"
 
 // Sets default values
 AFlagZone::AFlagZone()
@@ -11,11 +12,8 @@ AFlagZone::AFlagZone()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	RootComponent = Root;
-	
 	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger"));
-	Trigger->SetupAttachment(GetRootComponent());
+	RootComponent = Trigger;
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(GetRootComponent());
@@ -43,18 +41,23 @@ void AFlagZone::Tick(float DeltaTime)
 void AFlagZone::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	GetWorldTimerManager().UnPauseTimer(FlagTimer);
+	AMyCharacter* player = Cast<AMyCharacter>(OtherActor);
+	if (player != nullptr)
+		GetWorldTimerManager().UnPauseTimer(FlagTimer);
 }
 
 void AFlagZone::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	GetWorldTimerManager().PauseTimer(FlagTimer);
+	AMyCharacter* player = Cast<AMyCharacter>(OtherActor);
+	if (player != nullptr)
+		GetWorldTimerManager().PauseTimer(FlagTimer);
 }
 
 void AFlagZone::AddTic() const
 {
 	ACaptureFlagGameMode* GameMode = GetWorld()->GetAuthGameMode<ACaptureFlagGameMode>();
-	GameMode->AddFlagTic();
+	if (GameMode != nullptr)
+		GameMode->AddFlagTic();
 }
 

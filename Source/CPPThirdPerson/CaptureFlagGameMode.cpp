@@ -2,8 +2,9 @@
 
 
 #include "CaptureFlagGameMode.h"
-
+#include <string>
 #include "CharacterAI.h"
+#include "MyPlayerController.h"
 #include "GameFramework/Character.h"
 
 void ACaptureFlagGameMode::PawnKilled(ACharacter* PawnKilled)
@@ -20,19 +21,17 @@ void ACaptureFlagGameMode::PawnKilled(ACharacter* PawnKilled)
 	enemy->Respawn();
 }
 
-void ACaptureFlagGameMode::EndGame(bool bIsPlayerWinner)
-{
-	if (bIsPlayerWinner)
-	{
-		//show victory
-	}
-	else
-	{
-		//show defeat
-	}
-}
-
 void ACaptureFlagGameMode::AddFlagTic()
 {
 	iFlagTic++;
+	if (iFlagTic == TargetPoints)
+		EndGame(true);
+	if (iFlagTic <= TargetPoints)
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Actual Points: %d"), iFlagTic));
+}
+
+void ACaptureFlagGameMode::EndGame(bool bIsPlayerWinner) const
+{
+	AMyPlayerController* controller = Cast<AMyPlayerController>(GetWorld()->GetFirstPlayerController());
+	controller->GameHasEnded(controller->GetPawn(), bIsPlayerWinner);
 }

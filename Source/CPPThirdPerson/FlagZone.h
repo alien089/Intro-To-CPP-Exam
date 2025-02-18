@@ -16,9 +16,6 @@ private:
 	FTimerHandle FlagTimer;
 	
 public:
-	UPROPERTY(VisibleAnywhere)
-	USceneComponent* Root;
-	
 	UPROPERTY(EditAnywhere, Category="FlagTrigger")
 	UBoxComponent* Trigger;
 	

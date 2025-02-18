@@ -32,6 +32,8 @@ void ACharacterAI::BeginPlay()
 
 	SwitchWeapon();
 	CurrentHealth = MaxHealth;
+
+	SpawnPosition = GetActorLocation();
 }
 
 // Called every frame
@@ -65,7 +67,8 @@ void ACharacterAI::TryReload()
 
 void ACharacterAI::Respawn()
 {
-	
+	CurrentHealth = MaxHealth;
+	SetActorLocation(SpawnPosition);
 }
 
 float ACharacterAI::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -80,9 +83,6 @@ float ACharacterAI::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 
 		if (GameMode != nullptr)
 		GameMode->PawnKilled(this);
-
-		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		DetachFromControllerPendingDestroy();
 	}
 
 	return DamageToApply;

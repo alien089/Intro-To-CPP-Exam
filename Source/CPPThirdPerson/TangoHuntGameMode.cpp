@@ -1,9 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TangoHuntGameMode.h"
+
+#include "CharacterAI.h"
 #include "EngineUtils.h"
 #include "GameFramework/Controller.h"
 #include "ShooterAIController.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
 
 void ATangoHuntGameMode::PawnKilled(ACharacter* PawnKilled)
@@ -16,6 +19,9 @@ void ATangoHuntGameMode::PawnKilled(ACharacter* PawnKilled)
 		EndGame(false);
 	}
 
+	ACharacterAI* enemy = Cast<ACharacterAI>(PawnKilled);
+	enemy->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	enemy->DetachFromControllerPendingDestroy();
 
 	for (AShooterAIController* Controller : TActorRange<AShooterAIController>(GetWorld()))
 	{
@@ -24,6 +30,7 @@ void ATangoHuntGameMode::PawnKilled(ACharacter* PawnKilled)
 			return;
 		}
 	}
+
 
 	EndGame(true);
 }

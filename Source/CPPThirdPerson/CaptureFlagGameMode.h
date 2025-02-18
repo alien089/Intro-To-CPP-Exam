@@ -13,13 +13,16 @@ UCLASS()
 class CPPTHIRDPERSON_API ACaptureFlagGameMode : public ACPPThirdPersonGameMode
 {
 	GENERATED_BODY()
+	
 private:
 	int iFlagTic = 0;
-private:
-	void EndGame(bool bIsPlayerWinner);
-	
+
+	UPROPERTY(EditAnywhere)
+	int TargetPoints = 5;
 public:
 	void AddFlagTic();
 	virtual void PawnKilled(ACharacter* PawnKilled) override;
-
+	
+private:
+	void EndGame(bool bIsPlayerWinner) const;
 };
